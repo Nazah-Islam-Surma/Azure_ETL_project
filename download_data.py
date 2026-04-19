@@ -1,7 +1,7 @@
 import kaggle
 kaggle.api.authenticate()
-kaggle.api.download_data_files(
-  "datasets/ukveteran/adventure-works",
+kaggle.api.dataset_download_files(
+  "ukveteran/adventure-works",
   path="./data",
   unzip= True
 )
