@@ -1,0 +1,31 @@
+name: Download Kaggle Dataset
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Kaggle
+        run: pip install kaggle
+      - name: Download Dataset
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: python download_data.py
+      - name: Save Dataset to Repo
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git pull origin main
+          git add data/
+          git diff --staged --quiet || git commit -m "Add Adventure Works dataset"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
